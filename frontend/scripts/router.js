@@ -14,13 +14,12 @@ export class Router {
     route(request) {
         console.log(request.url)
         if (request.url == '/'){
-            return this.pages['index']
+            return this.pages['index.html']
         }
         
         var page = request.url.replace('/', '')
         if (page in this.pages){
-            var content = this.render_page(this.pages[page])
-            return content
+            return this.render_page(page, this.pages[page])
         }
 
         return 'unknown page'
