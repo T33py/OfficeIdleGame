@@ -7,13 +7,28 @@ class color_event_manager:
     '''
     def __init__(self):
         self.frame_size: int = 1000
-        self.event_frames: list[list] = [ [ ] ]
+        self.event_frames: list[list[cevt]] = [ [ ] ]
+        self.grid: list[list[cevt]] = []
+        self.snapshot: dict = {
+            'most_recent_event': 0,
+            'grid': []
+        }
+        for x in range(100):
+            self.grid.append([])
+            for y in range(100):
+                self.grid[x].append(cevt())
         return
 
-    def add_event(self, event):
+    def add_event(self, event: cevt):
         '''
         add an event to the queue. 
         '''
+        if event.position.x > 100 or event.position.y > 100 or event.position.x < 0 or event.position.y < 0:
+            return
+        if event.position.x > 0:
+            event.position.x -= 1
+        if event.position.y > 0:
+            event.position.y -= 1
         event.id = self.next_id()
         
         lst_frame = self.event_frames[len(self.event_frames)-1]
@@ -21,6 +36,8 @@ class color_event_manager:
         if len(lst_frame) >= self.frame_size:
             lst_frame = []
             self.event_frames.append(lst_frame)
+        self.grid[event.position.x][event.position.y] = event
+        self.snapshot['most_recent_event'] = event.id
         lst_frame.append(event)
         return
 
@@ -39,8 +56,7 @@ class color_event_manager:
         if frame_offset < 0:
             frame_offset = 0
         
-        # start at -1 to avoid dowhile
-        frame_jumps = -1
+        frame_jumps = 0
         while frame_offset > 0:
             frame_jumps += 1
             frame_offset -= self.frame_size
@@ -53,6 +69,7 @@ class color_event_manager:
         while f < len(self.event_frames):
             for evt in self.event_frames[f]:
                 if evt.id > event_index:
+                    print(f'return {evt.id} from event frame {f}')
                     events.append(evt.serializable())
             f += 1
         
@@ -60,6 +77,17 @@ class color_event_manager:
             events = events[0: max_events]
         return events
     
+    def get_snapshot(self):
+        serializable_grid = []
+        self.snapshot['grid'] = serializable_grid
+        for col in self.grid:
+            scol = []
+            serializable_grid.append(scol)
+            for event in col:
+                scol.append(event.serializable())
+
+        return self.snapshot
+
     def next_id(self) -> int:
         at_id = 1
         last_frame = self.event_frames[len(self.event_frames)-1]

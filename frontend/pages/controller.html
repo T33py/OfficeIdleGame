@@ -6,13 +6,16 @@
 
 	</head>
 	<body>
-
-        <button id="up">Up</button>
-        <button id="down">Down</button>
-        <button id="left">Left</button>
-        <button id="right">Right</button>
-        <input id="color" type="text">
+        <script src="controller.js"></script>
+        <p id="coordinates">(1, 1)</p> <br>
+        <button id="up" onclick="move_up()">Up</button><br>
+        <button id="left" onclick="move_left()">Left</button>
+        <button id="down" onclick="move_down()">Down</button>
+        <button id="right" onclick="move_right()">Right</button><br>
+        <p>Farver er i rgb hexadecimal (00 til ff)</p><br>
+        <p>R:</p><input id="r" oninput="color_changed()" type="text" value="00">
+        <p>G:</p><input id="g" oninput="color_changed()" type="text" value="00">
+        <p>B:</p><input id="b" oninput="color_changed()" type="text" value="00">
 
 	</body>
-    <script src="controller.js"></script>
 </html>

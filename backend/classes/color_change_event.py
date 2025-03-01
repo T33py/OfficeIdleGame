@@ -5,7 +5,7 @@ class color_change_event:
         self.time_format = '%Y-%m-%d-%H-%M-%S-%f'
         self.id: int = 0
         self.position: position = position()
-        self.color = 'ffffff'
+        self.color = '000000'
         self.timestamp: datetime = datetime.now()
 
         if template != None:

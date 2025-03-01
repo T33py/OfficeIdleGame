@@ -1,21 +1,38 @@
 // Get the canvas element and its context
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
+const event_queue = []
 
 // Set canvas dimensions (optional)
 canvas.width = 1920;
 canvas.height = 1080;
+const tile_w = canvas.width / 100
+const tile_h = canvas.height / 100
 
 // Function to update the canvas content
 function updateCanvas() {
-    // Clear the canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (event_queue.length == 0) {
+        get_events().array.forEach(event => {
+            event_queue.push(event)
+        });
+        event_queue.reverse
+    }
+    if (event_queue.length == 0){
+        return
+    }
 
     // Draw something on the canvas
-    ctx.fillStyle = 'blue';
-    ctx.fillRect(50, 50, 100, 100); // Example: Draw a blue rectangle
+    while (event_queue.length > 0){
+        var event = event_queue.pop()
+        ctx.fillStyle = '#' + event.color;
+        ctx.fillRect(event.position.x * tile_w, event.position.y * tile_h, tile_w, tile_h); // Example: Draw a blue rectangle
+    }
+}
 
-    // You can add more dynamic content here
+function get_events(){
+    // TODO: fetch events from the api
+    events = []
+    return events
 }
 
 // Call the update function initially
