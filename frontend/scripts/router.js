@@ -17,7 +17,10 @@ export class Router {
             return this.pages['index.html']
         }
         
-        var page = request.url.replace('/', '')
+        var page = request.url
+        if (!page.includes('.')){
+            page += '.html'
+        }
         if (page in this.pages){
             return this.render_page(page, this.pages[page])
         }
