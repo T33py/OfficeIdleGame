@@ -1,7 +1,7 @@
 from datetime import datetime
 
 class color_change_event:
-    def __init__(self, template: dict = None):
+    def __init__(self, template = None):
         self.time_format = '%Y-%m-%d-%H-%M-%S-%f'
         self.id: int = 0
         self.position: position = position()
@@ -23,6 +23,7 @@ class color_change_event:
     def serializable(self) -> dict:
         ts = self.timestamp
         rep = {
+            'type': 'color_change',
             'id': self.id,
             'color': self.color,
             'position': {

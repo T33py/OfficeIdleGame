@@ -7,10 +7,10 @@ class color_event_manager:
     '''
     def __init__(self):
         self.frame_size: int = 1000
-        self.event_frames: list[list[cevt]] = [ [ ] ]
+        self.event_frames: list[list] = [ [ ] ]
         return
 
-    def add_event(self, event: cevt):
+    def add_event(self, event):
         '''
         add an event to the queue. 
         '''
@@ -19,13 +19,12 @@ class color_event_manager:
         lst_frame = self.event_frames[len(self.event_frames)-1]
         # only make new frames when we have events to put in them
         if len(lst_frame) >= self.frame_size:
-            print('NEW FRAME')
             lst_frame = []
             self.event_frames.append(lst_frame)
         lst_frame.append(event)
         return
 
-    def get_events(self, event_index: int, max_events: int = -1) -> list[cevt]:
+    def get_events(self, event_index: int, max_events: int = -1) -> list:
         '''
         get all elements with higher id than the index provided
         '''
