@@ -97,7 +97,6 @@ class color_event_manager:
         while f < len(self.event_frames):
             for evt in self.event_frames[f]:
                 if evt.id > event_index:
-                    print(f'return {evt.id} from event frame {f}')
                     events.append(evt.serializable())
             f += 1
         

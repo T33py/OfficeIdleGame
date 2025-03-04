@@ -21,7 +21,6 @@ def event_queue(event_id):
         'message': f'Invalid request: {request.method}',
         'code': 400
     }
-    print(f'${request.method}')
     if request.method == 'GET':
         data['message'] = f'Events newer than {event_id}'
         data['code'] = 200
