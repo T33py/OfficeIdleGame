@@ -12,28 +12,7 @@ const server = http.createServer((req, res) => {
     res.statusCode = 200
     res.setHeader('Content-Type', 'text/html')
 
-    if (req.method == 'POST'){
-        let body = '';
-        req.on('data', (chunk) => {
-            body += chunk;
-        });
-        req.on('end', () => {
-            console.log(body);
-            router.post_event(body)
-            res.write('OK'); 
-            res.statusCode = 200
-            res.end(); 
-        });
-    }
-    else if(req.method == 'GET'){
-        var result = router.route(req)
-        if (result == null) {
-            res.statusCode = 400
-            res.end('ERROR!!!')
-            return
-        }
-        res.end(result);
-}
+    router.route(req, res)
 });
 
 server.listen(port, hostname, () => {

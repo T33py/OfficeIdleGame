@@ -5,15 +5,15 @@ export class Router {
         this.pages = pages
         this.apis = [ 'get_events', 'get_snapshot', 'post_event' ]
         this.callbacks = {}
+        this.backend_url = 'http://127.0.0.1:5000/'
     }
 
     /**
      * Routes incomming requests to the correct page
      * @param {http.IncomingMessage} request 
-     * @returns Rendered HTML page
+     * @param {http.ServerResponse} result
      */
-    route(request) {
-        console.log(request.url)
+    async route(request, result) {
         if (request.url == '/'){
             return this.pages['index.html']
         }
@@ -23,14 +23,35 @@ export class Router {
             page += '.html'
         }
         if (page in this.pages){
-            return this.render_page(page, this.pages[page])
+            result.end(this.render_page(page, this.pages[page]));
+            return
         }
         
-        page = page.replace('.html', '').replace('/', '').replace(' ', '')
-        if (this.apis.includes(page)){
-            if (page == 'post_event'){
-                console.log('POST')
-                this.post_event(request)
+        page = page.replace('.html', '')
+        var api = page.split('/')[1]
+        if (this.apis.includes(api)){
+            if (api == 'post_event'){
+                
+                let body = '';
+                request.on('data', (chunk) => {
+                    body += chunk;
+                });
+                request.on('end', () => {
+                    this.post_event(body)
+                    result.write('OK'); 
+                    result.statusCode = 200
+                    result.end(); 
+                });
+            }
+            else if (api == 'get_events'){
+                var evs = await this.get_events(page.split('/')[2])
+                result.end(JSON.stringify(evs))
+            }
+            else if (api == 'get_snapshot'){
+                var snap = await this.get_snapshot()
+                result.end(JSON.stringify(snap))
+                return 
+
             }
             return null
         }
@@ -39,11 +60,42 @@ export class Router {
     }
 
     async post_event(event){
-        fetch('http://127.0.0.1:5000/input', {
+        fetch(this.backend_url + 'input', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: event
         });
+    }
+
+    async get_snapshot(){
+        var snapshot = null
+        await fetch(
+            this.backend_url + 'snapshot', 
+            {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            }
+        ).then(async (response) => {
+            var s = await response.json()
+            snapshot = s
+        })
+        return snapshot
+    }
+
+    async get_events(id){
+        var evs = null
+        // console.log(`fetching from: ${this.backend_url + 'events/' + id}`)
+        await fetch(this.backend_url + 'events/' + id, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }).then(async (response) => {
+            // console.log(response)
+            var events = await response.json()
+            evs = events
+            return 
+        })
+        // console.log(evs)
+        return evs
     }
 
     /**

@@ -40,9 +40,7 @@ function color_changed(){
     var g = document.getElementById('g').value
     var b = document.getElementById('b').value
     var color = r + g + b
-    if (color.lenght == 6){
-        event_template.color = color
-    }
+    event_template.color = color
 }
 
 function update_coordinates(){

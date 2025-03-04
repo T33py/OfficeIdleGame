@@ -21,7 +21,6 @@ class color_change_event:
         return
     
     def serializable(self) -> dict:
-        ts = self.timestamp
         rep = {
             'type': 'color_change',
             'id': self.id,
@@ -35,7 +34,7 @@ class color_change_event:
         return rep
 
     def __str__(self):
-        return f'{self.id}: {self.color} at ({self.position.x}, {self.position.y})'
+        return str(self.serializable())
 
 class position:
     def __init__(self):

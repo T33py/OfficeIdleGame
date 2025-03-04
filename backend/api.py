@@ -7,6 +7,8 @@ event_manager: color_event_manager = color_event_manager()
 # for i in range(25):
 #     event_manager.add_event(color_change_event())
 
+# event_manager.backup()
+
 @app.route("/")
 def hello_world():
     return "<h1>Hello, World!</h1>"
@@ -28,7 +30,7 @@ def event_queue(event_id):
         else:
             data['events'] = event_manager.get_events(event_id, 100)
 
-    return jsonify(data), data['code']
+    return jsonify(data)
 
 
 @app.route("/input", methods=['POST'])
@@ -47,7 +49,7 @@ def recieve_input():
 
 @app.route("/snapshot", methods=['GET'])
 def get_snapshot():
-    return jsonify(event_manager.snapshot())
+    return jsonify(event_manager.get_snapshot())
 
 if __name__ == '__main__':
     app.run(debug=True)
